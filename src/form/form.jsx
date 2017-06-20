@@ -5,6 +5,9 @@ import { createForm } from 'rc-form';
 import classNames from 'classnames';
 import FormItem from './form-item';
 import  { FIELD_META_PROP } from './constants';
+
+import ANTDForm from 'antd/lib/form';
+
 class Form extends React.Component {
    static defaultProps = {
     layout: 'horizontal',
@@ -70,6 +73,7 @@ class Form extends React.Component {
         className={classNames('dh-form', {
           [`dh-form-${layout}`]: layout
         })
+        
       }>
         {
            this.props.children 
