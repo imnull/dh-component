@@ -81,7 +81,7 @@ class ListItem extends React.Component {
       transform: selected ? 'scaleY(1)' : ' scaleY(0)'
     }
     return (
-      <li 
+      <li ref="itemContainer"
         className="dh-list-child"
         data-selected={selected}>
         <div className="dh-list-child__inner">

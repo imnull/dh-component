@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Checkbox from '../checkbox';
 import Icon from '../icon';
+import JSF from 'dh-jsf';
 
 const EXT_WIDTH = 24;
 
