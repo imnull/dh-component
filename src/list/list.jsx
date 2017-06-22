@@ -130,6 +130,7 @@ class List extends React.Component {
   
   // 初始化所有dom相关
   domInitAll(){
+
     this.state.domDraggable = !!this.props.domDraggable;
     this.state.dragDelay = 500;
     if(typeof(this.props.dragDelay) == 'number' && props.dragDelay > 0){
@@ -213,23 +214,29 @@ class List extends React.Component {
         this.state.domCloneItem.style.left = left + 'px';
         this.state.domCloneItem.style.top = top + 'px';
 
-        let bingoIdx = this.state.domChildrenTop.findIndex((t) => t > top);
+
         let tops = this.state.domChildrenTop.slice(0);
         tops[this.state.domDragIndex] = top;
+
+        let domChildren = this.state.domChildren;
+
         tops = tops.map(function(v,i){
-          return [v, this.state.children[i]]
+          return [v, this.state.children[i], domChildren[i], i]
         }.bind(this));
 
         tops.sort((a, b) => a[0] - b[0]);
         let children = tops.map((v) => v[1]);
+        let childrenDom = tops.map((v) => v[2]);
         let serial = children.map((child) => child.key).join(',');
 
         if(serial != this.state.domChildSerial){
           this.state.domChildSerial = serial;
-          this.setState({ children });
+          this.state.__children = children;
+          let parent = this.state.domListContainer;
+          childrenDom.forEach((c) => {
+            parent.appendChild(c);
+          })
         }
-
-        console.log(tops.map((v) => v[0]))
         
       }.bind(this)
     }
@@ -247,11 +254,17 @@ class List extends React.Component {
         document.removeEventListener('mousemove', this.state.domCloneDomMouseMove);
         // document.removeEventListener('mouseup', mouseup);
 
-        this.refs.container.style.cssText = '';
+        this.state.domListContainer.style.cssText = '';
         this.state.domDragTarget.style.cssText = '';
         if(this.state.domCloneItem && this.state.domCloneItem.parentNode) {
           this.state.domCloneItem.parentNode.removeChild(this.state.domCloneItem);
         }
+
+        this.state.__children && this.setState({
+          children: this.state.__children
+        });
+        delete this.state.__children;
+
       }.bind(this)
     }
 
@@ -336,7 +349,7 @@ class List extends React.Component {
   // 节点按下事件，取用React方法
   handleMouseDown(e){
 
-    // if(!this.state.domDraggable) return;
+    if(!this.state.domDraggable) return;
 
     var tar = e.target;
     while(tar && tar.nodeName != 'LI'){
